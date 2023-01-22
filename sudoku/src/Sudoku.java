@@ -96,15 +96,9 @@ public class Sudoku {
             }
             // backtracking por si no era una opción válida
             sudoku[vacia[0]][vacia[1]] = 0;
-            }
+        }
                 
     }
-
-    public List<Sudoku> solveAll() {
-        List<Sudoku> sols  = new LinkedList<Sudoku>();
-        solve(sols, 0, 0);
-		return sols;
-	}
 
     // Representación del tablero
     @Override
