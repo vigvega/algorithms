@@ -25,7 +25,9 @@ public class Main {
 
         Sudoku s = new Sudoku(s1);
         List<Sudoku> l = new LinkedList<>();
+
         s.solve(l, 0, 0);
+
         //for (Sudoku sudoku : l) {
         //    System.out.println(sudoku.toString());
         //}

@@ -111,7 +111,10 @@ public class Sudoku {
             for(int j=0; j<C; j++){
                 if (j%3==0 && j!=0)
                     b += "| ";
-                b += sudoku[i][j] + "  ";
+                if (sudoku[i][j]==0)
+                    b += " . ";
+                else
+                    b += " " + sudoku[i][j] + " ";
                 
             }
 
