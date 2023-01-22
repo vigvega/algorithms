@@ -1,7 +1,4 @@
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.swing.plaf.synth.SynthSpinnerUI;
+import java.util.*;
 
 public class Sudoku {
     private int [][] sudoku;
@@ -12,7 +9,6 @@ public class Sudoku {
     public Sudoku(int [][] s){
         sudoku = s;
     }
-
 
     // Devuelve si la celda está libre
 	private boolean gap(int f, int c) {
@@ -37,8 +33,7 @@ public class Sudoku {
 				encontrado = true;
 		}
 		return encontrado;
-	}    
-	
+	}
 
     // Devuelve si el valor está en el subtablero indicado
 	private boolean inBoard(int fila, int columna, int valor) {
@@ -89,13 +84,14 @@ public class Sudoku {
             System.out.println(new Sudoku(sudoku).toString()+"\n");
             //soluciones.add(new Sudoku(sudoku));
         }
-        // De lo contrario, le meto el primer valor que sea valido
+
+        // De lo contrario, meto el primer valor que sea valido
         else {
             for (int j = 1; j<10; j++) {
     
                 if (addIn(vacia[0], vacia[1], j)) {
                     sudoku[vacia[0]][vacia[1]] = j;
-                    solve(soluciones, vacia[0], vacia[1]); //llamada recursiva
+                    solve(soluciones, vacia[0], vacia[1]); // llamada recursiva
                 }
             }
             // backtracking por si no era una opción válida
@@ -121,12 +117,14 @@ public class Sudoku {
             for(int j=0; j<C; j++){
                 if (j%3==0 && j!=0)
                     b += "| ";
-                b += sudoku[i][j] + " ";
+                b += sudoku[i][j] + "  ";
                 
             }
 
-            if (i!=F-1)
-                b += "\n-------+-------+------\n";
+            if ((i+1)%3==0 && i!=F-1)
+                b += "\n----------+----------+---------\n";
+            else
+                b += "\n\n";
         }
         return b;
     }
