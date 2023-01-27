@@ -3,12 +3,12 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws Exception, FileNotFoundException, IOException{
-        Board b = new Board("map2.txt");
-        //System.out.println(b.toString());
-        Board bs = b.solve(b, b.first(), b.last(), new HashSet<>());
-        System.out.println("\n");
-        System.out.println(bs.toString());
-       
 
+        Board b = new Board("map3.txt");
+        System.out.println(b.toString());
+        b.solve(b, b.first(), b.last(), new HashSet<>(), new HashMap<>());
+        System.out.println("\n");
+        System.out.println(b.toString());
+       
     }
 }

@@ -6,6 +6,7 @@ import java.util.*;
  * B: punto final
  * *: obstáculo
  * -: visitado
+ * x: solución
  */
 
 public class Board {
@@ -55,17 +56,22 @@ public class Board {
         return this.m;
     }
 
-    // Devuelve el elemento (i,j)
+    // Devuelve el elemento (i, j)
     protected char element(int i, int j){
         return this.matrix[i][j];
     }
     
-    // Añade una casilla a la ruta
+    // Añade una casilla a la ruta explorada
     protected void select(int i, int j){
         matrix[i][j] = '-';
     }
 
-    // Devuelve la posición del punto inicial
+    // Añade una casilla a la solución
+    protected void cross(int i, int j){
+        matrix[i][j] = 'x';
+    }
+
+    // Punto inicial
     protected int[] first(){
         for (int i=0; i<this.getN(); i++){
             for (int j=0; j<this.getM(); j++){
@@ -78,7 +84,7 @@ public class Board {
         return null;
     }
 
-    // Devuelve la posición del punto final
+    // Punto final
     protected int[] last(){
         for (int i=0; i<this.getN(); i++){
             for (int j=0; j<this.getM(); j++){
@@ -99,76 +105,71 @@ public class Board {
         return matrix[i][j]=='B';
     }
     
-    // Indica si una casilla es un obstáculo
     protected boolean isObstacle(int i, int j){
         return matrix[i][j]=='*';
     }
 
-    // Indica si una casilla ha sido visitada
-    protected boolean isVisited(int i, int j){
+    protected boolean isVisit(int i, int j){
         return matrix[i][j]=='-';
     }
 
+    protected boolean isCross(int i, int j){
+        return matrix[i][j]=='x';
+    }
+
+
     // Implementación del algoritmo
-    public Board solve(Board b, int[] f, int[] l, Set<int[]> frontier){
+    public Board solve(Board b, int[] f, int[] l, Set<int[]> frontier, HashMap<int[], int[]> sol){
 
         int i = f[0];
         int j = f[1];
         boolean ult = false;
-        
+
         // Añado a frontier todas las casillas que puedo visitar
         // (i+1, j)
-        if (i+1>=0 && i+1<n && j>=0 && j<m && !b.isFirst(i+1, j) && !b.isObstacle(i+1, j) && !b.isVisited(i+1, j)){
+        if (i+1>=0 && i+1<n && j>=0 && j<m && !b.isFirst(i+1, j) && !b.isObstacle(i+1, j) && !b.isVisit(i+1, j)){
             int[] c = {i+1, j};
             frontier.add(c);
-
+            sol.put(c, f);
             if(b.isLast(i+1, j)) ult = true;
         }
 
         // (i-1, j)
-        if (i-1>=0 && i-1<n && j>=0 && j<m && !b.isFirst(i-1, j)  && !b.isObstacle(i-1, j) && !b.isVisited(i-1, j)){
+        if (i-1>=0 && i-1<n && j>=0 && j<m && !b.isFirst(i-1, j)  && !b.isObstacle(i-1, j) && !b.isVisit(i-1, j)){
             int[] c = {i-1, j};
             frontier.add(c);
-
+            sol.put(c, f);
             if(b.isLast(i-1, j)) ult = true;
-        }
+         }
 
         // (i, j+1)
-        if (i>=0 && i<n && j+1>=0 && j+1<m && !b.isFirst(i, j+1) && !b.isObstacle(i, j+1) && !b.isVisited(i, j+1)){
+        if (i>=0 && i<n && j+1>=0 && j+1<m && !b.isFirst(i, j+1) && !b.isObstacle(i, j+1) && !b.isVisit(i, j+1)){
             int[] c = {i, j+1};
             frontier.add(c);
-
+            sol.put(c, f);
             if(b.isLast(i, j+1)) ult = true;
         }
 
         // (i, j-1)
-        if (i>=0 && i<n && j-1>=0 && j-1<m && !b.isFirst(i, j-1) && !b.isObstacle(i, j-1) && !b.isVisited(i, j-1)){
+        if (i>=0 && i<n && j-1>=0 && j-1<m && !b.isFirst(i, j-1) && !b.isObstacle(i, j-1) && !b.isVisit(i, j-1)){
             int[] c = {i, j-1};
             frontier.add(c);
-
+            sol.put(c, f);
             if(b.isLast(i, j-1)) ult = true;
         }
 
-        // Si frontier is empty o está B ---> he terminado
+        // Si frontier is empty o está B, he terminado
         // Sino, exploro el más prometedor
         if(frontier.isEmpty() || ult){
+            b.cross(i, j);
+            backtrack(b, f, sol); // devuelve la solución definitiva
             return b;
         }
-        else{ // llamada recursiva
+        else{
             int[] sig = explore(b, frontier);
             b.select(sig[0], sig[1]);
-            return solve(b, sig, l, frontier);
+            return solve(b, sig, l, frontier, sol);
         }
-    }
-    
-    private void printSet(Set<int[]> s){
-        Iterator<int[]> it = s.iterator();
-        System.out.println("\nSet:");
-        while(it.hasNext()){
-            int[] c = it.next();
-            System.out.println(c[0] + " " + c[1]);
-        }
-       
     }
 
     // Función auxiliar que devuelve la casilla más prometedora
@@ -206,34 +207,53 @@ public class Board {
         return dist0+dist1;
     }
 
+    // Vuelta atrás desde B a A para añadir la solución definitiva
+    private Board backtrack(Board b, int[] node, HashMap<int[], int[]> dict){
+        if (node == null){
+            return b;
+        }
+        else{
+            b.cross(node[0], node[1]);
+            return backtrack(b, myGet(dict, node), dict);
+        }
+    }
+
+    private int[] myGet(HashMap<int[], int[]> d, int[] key){
+        for (int[] k : d.keySet()) {
+            if (k[0] == key[0] && k[1] == key[1])
+                return d.get(k);
+        }
+        return null;
+    }
+
     // Representación del tablero
     @Override
     public String toString(){
         // Colores
-        String RED = "\u001B[31m";
         String GREEN = "\u001B[32m";
         String YELLOW = "\u001B[33m";
         String RESET = "\u001B[0m";
         String b = "";
 
-        for (int i=0; i<10; i++){
+        for (int i=0; i<n; i++){
             b += " ";
-            for(int j=0; j<10; j++){
-
+            for(int j=0; j<m; j++){
                 if (matrix[i][j]=='A' || matrix[i][j]=='B'){
-                    b += GREEN + "◉ " + RESET;
+                    b += GREEN + "◎ " + RESET;
                 }
                 else if (isObstacle(i, j)){
                     b += "■ ";
                 }
-                else if (isVisited(i, j)){
-                    b += YELLOW + "■ " + RESET;
+                else if (isCross(i, j)){
+                    b += GREEN + "● " + RESET;
+                }
+                else if (isVisit(i, j)){
+                    b += YELLOW + "● " + RESET;
                 }
                 else{
                     b += " " + matrix[i][j];
                 }
             }
-
             b += "\n";
         }
         return b;
