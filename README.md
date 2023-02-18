@@ -25,9 +25,9 @@ La segunda función auxiliar que utilizo sirve para, una vez haber llegado a la 
 
 ### Resolución de Sudoku por Backtracking
 
-También podemos encontrar un pequeño programa que calcula todas las posibles soluciones de cualquier Sudoku mediante un algoritmo de backtracking.
+También podemos encontrar un pequeño programa que resuelve cualquier Sudoku mediante un algoritmo de backtracking.
 
-Como cualquier algoritmo por vuelta atrás, lo único que hace es, ir probando valores en cada celda vacía y, cuando llega a alguna en la que no hay ninguna opción válida, vuelve atrás y prueba nuevas combinaciones.
+Como cualquier algoritmo por vuelta atrás, lo único que hace es ir probando valores en cada celda vacía y, cuando llega a alguna en la que no hay ninguna opción válida, vuelve atrás y prueba nuevas combinaciones.
 
 Una pequeña variante que he añadido a mi código consiste en que no solo te devuelve la primera solución que encuentra, sino todas las soluciones posibles.
 
