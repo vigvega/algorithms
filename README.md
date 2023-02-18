@@ -33,6 +33,6 @@ Una pequeña variante que he añadido a mi código consiste en que no solo te de
 
 <center>
 
-![](/sudoku/img/unsolved.png) ![](/sudoku/img/solved1.png) ![](/sudoku/img/solved2.png)
+![](/sudoku/imgs/unsolved.png) ![](/sudoku/imgs/solved1.png) ![](/sudoku/imgs/solved2.png)
 
 </center>
